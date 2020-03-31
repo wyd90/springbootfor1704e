@@ -269,6 +269,89 @@ public class RedisTemplateTest {
             System.out.println(name);
         }
     }
+//============================================================================================
+    //========================================list================================================
+    //listzh中数据元素可以重复
+
+    //向list中插入数据
+    //lpush leftchannel "\"tanguoning\"","\"anshuai\"","\"zhangxiaoyu\""
+    //rpush rightchannel "\"liangjunwei\"","\"zhangfuda\"","\"likefeng\""
+    @Test
+    public void testPushList() {
+        redisTemplate.opsForList().leftPushAll("leftchannel","tanguoning","anshuai","zhangxiaoyu");
+        redisTemplate.opsForList().rightPushAll("rightchannel","liangjunwei","zhangfuda","likefeng");
+    }
+
+    //读取list中的数据
+    //lrange leftchannel 0 -1
+    @Test
+    public void testGetListValues() {
+        List<String> leftchannel = redisTemplate.opsForList().range("leftchannel", 0, -1);
+        for(String name:leftchannel) {
+            System.out.println(name);
+        }
+    }
+
+    //读取list中的单个元素
+    //LINDEX leftchannel 2
+    @Test
+    public void testGetListValue() {
+        String value = (String) redisTemplate.opsForList().index("leftchannel", 2);
+        System.out.println(value);
+    }
+
+    //获取list的长度
+    //LLEN leftchannel
+    @Test
+    public void testGetListLength() {
+        Long length = redisTemplate.opsForList().size("leftchannel");
+        System.out.println(length);
+    }
+
+    //在list中插入数据
+    //LINSERT leftchannel AFTER "\"zhangxiaoyu\"" "\"huangyoujie\""
+    //LINSERT leftchannel BEFORE "\"zhangxiaoyu\"" "\"xuefengshuai\""
+    @Test
+    public void testInsetList() {
+        redisTemplate.opsForList().rightPush("leftchannel","zhangxiaoyu","huangyoujie");
+        redisTemplate.opsForList().leftPush("leftchannel","zhangxiaoyu","xuefengshuai");
+
+    }
+
+    //截取list中的值，然后只保留list中截取的值
+    //LTRIM leftchannel 2 4
+    public void testTirmList() {
+        redisTemplate.opsForList().trim("leftchannel",2,4);
+    }
+
+    //弹出list中的元素
+    //lpop leftchannel
+    //rpop leftchannel
+    //RPOPLPUSH leftchannel rightchannel
+    @Test
+    public void testPop() {
+        redisTemplate.opsForList().leftPop("leftchannel");
+        redisTemplate.opsForList().rightPop("leftchannel");
+        redisTemplate.opsForList().rightPopAndLeftPush("leftchannel","rightchannel");
+    }
+
+    //根据索引位置修改list中的值
+    //lset rightchannel 1 "\"liangjunxiao\""
+    @Test
+    public void testListSet() {
+        redisTemplate.opsForList().set("rightchannel",1,"liangjunxiao");
+    }
+
+    //删除list中指定的值
+    //LREM rightchannel 2 "\"liangjunxiao\""
+    //num，  num=0，删除列表中所有的指定值；
+     //       # num=2,从前到后，删除2个；
+     //       # num=-2,从后向前，删除2个
+    @Test
+    public void testDelList() {
+        redisTemplate.opsForList().remove("rightchannel",2,"liangjunxiao");
+    }
+
 
 
 }
